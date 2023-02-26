@@ -254,24 +254,13 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     private Bitmap rgbFrameBitmap;
     @Override
     public void onImageAvailable(ImageReader reader) {
-        // We need wait until we have some size from onPreviewSizeChosen
-        if (previewWidth == 0 || previewHeight == 0) {
-            return;
-        }
-        if (rgbBytes == null) {
-            rgbBytes = new int[previewWidth * previewHeight];
-        }
+        if (previewWidth == 0 || previewHeight == 0)           return;
+        if (rgbBytes == null)    rgbBytes = new int[previewWidth * previewHeight];
         try {
             final Image image = reader.acquireLatestImage();
+            if (image == null)    return;
+            if (isProcessingFrame) {           image.close();            return;         }
 
-            if (image == null) {
-                return;
-            }
-
-            if (isProcessingFrame) {
-                image.close();
-                return;
-            }
             isProcessingFrame = true;
             final Image.Plane[] planes = image.getPlanes();
             fillBytes(planes, yuvBytes);
@@ -279,37 +268,22 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
             final int uvRowStride = planes[1].getRowStride();
             final int uvPixelStride = planes[1].getPixelStride();
 
-            imageConverter =
-                    new Runnable() {
+            imageConverter =  new Runnable() {
                         @Override
                         public void run() {
                             ImageUtils.convertYUV420ToARGB8888(
-                                    yuvBytes[0],
-                                    yuvBytes[1],
-                                    yuvBytes[2],
-                                    previewWidth,
-                                    previewHeight,
-                                    yRowStride,
-                                    uvRowStride,
-                                    uvPixelStride,
-                                    rgbBytes);
+                                    yuvBytes[0], yuvBytes[1], yuvBytes[2], previewWidth,  previewHeight,
+                                    yRowStride,uvRowStride, uvPixelStride,rgbBytes);
                         }
                     };
-
-            postInferenceCallback =
-                    new Runnable() {
+            postInferenceCallback =      new Runnable() {
                         @Override
-                        public void run() {
-                            image.close();
-                            isProcessingFrame = false;
-                        }
+                        public void run() {  image.close(); isProcessingFrame = false;  }
                     };
 
             processImage();
 
         } catch (final Exception e) {
-            Log.d("tryError",e.getMessage());
-            return;
         }
 
     }
