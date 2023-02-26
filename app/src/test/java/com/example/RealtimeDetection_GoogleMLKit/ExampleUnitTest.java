@@ -1,4 +1,4 @@
-package com.example.facedetection2023_it;
+package com.example.RealtimeDetection_GoogleMLKit;
 
 import org.junit.Test;
 

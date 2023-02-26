@@ -41,18 +41,20 @@
         app:layout_constraintTop_toBottomOf="@+id/txtTitulo" />
 
 
-    <ImageView
-        android:id="@+id/image_view"
+    <FrameLayout
+        android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:background="@android:color/black"
         android:layout_margin="10dp"
         app:layout_constraintBottom_toTopOf="@+id/txtresults"
-        app:layout_constraintTop_toBottomOf="@+id/btGallery" />
+        app:layout_constraintTop_toBottomOf="@+id/btGallery">
+    </FrameLayout>
 
     <TextView
         android:id="@+id/txtresults"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="100dp"
         android:layout_margin="10dp"
         android:inputType="textMultiLine"
         android:scrollbars="vertical"
@@ -76,6 +78,7 @@
         android:layout_width="150dp"
         android:layout_height="55dp"
         android:layout_margin="10dp"
+        android:onClick="PersonalizedModel"
         android:text="Objetos"
         app:layout_constraintBottom_toTopOf="@+id/btText"
         app:layout_constraintLeft_toLeftOf="parent"
